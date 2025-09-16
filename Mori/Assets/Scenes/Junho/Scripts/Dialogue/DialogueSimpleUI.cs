@@ -45,20 +45,20 @@ public class DialogueSimpleUI : MonoBehaviour, IPointerClickHandler
     void Update()
     {
         // 스페이스바로 진행
-#if ENABLE_INPUT_SYSTEM
+/*#if ENABLE_INPUT_SYSTEM
         // 새 Input System
         if (UnityEngine.InputSystem.Keyboard.current != null &&
             UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             Advance();
         }
-#else
+#else*/
         // 기존 Input Manager
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Advance();
         }
-#endif
+//#endif
     }
 
     // UI(Img_DialogueBar)를 클릭했을 때 진행
