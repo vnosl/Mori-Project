@@ -19,10 +19,16 @@ public class DialogueSimpleUI : MonoBehaviour, IPointerClickHandler
     [SerializeField] private bool autoPickFirstChoice = true; // 선택지 나오면 첫 번째 자동선택
     [SerializeField] private string endText = "";             // 끝났을 때 표시할 문구
 
+    [SerializeField] private GameObject Img_DialogueBar;
+
+    private bool DC_Triger = false;
+
+
     private DialogueLine _current;
 
     void Awake()
     {
+
         // TxT_Dialogue 자동 찾기
         if (tmpText == null && uiText == null)
         {
@@ -33,38 +39,78 @@ public class DialogueSimpleUI : MonoBehaviour, IPointerClickHandler
                 if (tmpText == null) uiText = t.GetComponent<Text>();
             }
         }
+
+        Img_DialogueBar.SetActive(false);
+
     }
 
     void Start()
     {
         var db = DialogueDatabase.Instance; // DialogueDB 오브젝트가 씬에 있어야 함(또는 부트스트랩)
         _current = db.GetStartLine(eventId, day);
-        ShowLine(_current);
+        
     }
 
     void Update()
     {
+
+
         // 스페이스바로 진행
-/*#if ENABLE_INPUT_SYSTEM
-        // 새 Input System
-        if (UnityEngine.InputSystem.Keyboard.current != null &&
-            UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            Advance();
-        }
-#else*/
+        /*#if ENABLE_INPUT_SYSTEM
+                // 새 Input System
+                if (UnityEngine.InputSystem.Keyboard.current != null &&
+                    UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame)
+                {
+                    Advance();
+                }
+        #else*/
         // 기존 Input Manager
+       
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Advance();
+            if (DC_Triger == false)
+            {
+                DC_Triger = true;
+                Img_DialogueBar.SetActive(true);
+                ShowLine(_current);
+            }
+            else
+            {
+                
+                Advance();
+            }
+        }else if (Input.GetMouseButtonDown(0)) {
+            if (DC_Triger == false)
+            {
+                DC_Triger = true;
+                Img_DialogueBar.SetActive(true);
+                ShowLine(_current);
+            }
+            else
+            {
+                Advance();
+                
+            }
         }
+            
+       
 //#endif
     }
 
     // UI(Img_DialogueBar)를 클릭했을 때 진행
     public void OnPointerClick(PointerEventData eventData)
     {
-        Advance();
+        if (DC_Triger == false)
+        {
+            DC_Triger = true;
+            Img_DialogueBar.SetActive(true);
+            ShowLine(_current);
+        }
+        else
+        {
+            Advance();
+            
+        }
     }
 
     // === 진행 로직 ===
@@ -72,6 +118,8 @@ public class DialogueSimpleUI : MonoBehaviour, IPointerClickHandler
     {
         if (_current == null)
         {
+            Img_DialogueBar.SetActive(false);
+            DC_Triger = false;
             // 이미 종료
             return;
         }
