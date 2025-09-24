@@ -49,14 +49,14 @@ public class DialogueDatabase : MonoBehaviour
                 day = parseInt(get("day")),
                 type = get("type"),
                 speaker = get("speaker"),
-                portrait = get("portrait"),
+                //portrait = get("portrait"),
                 emotion = get("emotion"),
                 text = get($"text_{language}"),
                 nextId = get("next_id"),
-                choiceGroup = get("choice_group"),
+                //choiceGroup = get("choice_group"),
             };
 
-            if (string.IsNullOrEmpty(line.id)) continue;
+            if (string.IsNullOrEmpty(line.id)) continue; // ID가 없는 행을 만나면 다시 반복
             _lineById[line.id] = line;
 
             if (!string.IsNullOrEmpty(line.eventId))

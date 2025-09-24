@@ -40,7 +40,7 @@ public class DialogueSimpleUI : MonoBehaviour, IPointerClickHandler
             }
         }
 
-        Img_DialogueBar.SetActive(false);
+        //Img_DialogueBar.SetActive(false);
 
     }
 
@@ -48,7 +48,8 @@ public class DialogueSimpleUI : MonoBehaviour, IPointerClickHandler
     {
         var db = DialogueDatabase.Instance; // DialogueDB 오브젝트가 씬에 있어야 함(또는 부트스트랩)
         _current = db.GetStartLine(eventId, day);
-        
+        ShowLine(_current);
+
     }
 
     void Update()
@@ -68,30 +69,9 @@ public class DialogueSimpleUI : MonoBehaviour, IPointerClickHandler
        
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (DC_Triger == false)
-            {
-                DC_Triger = true;
-                Img_DialogueBar.SetActive(true);
-                ShowLine(_current);
-            }
-            else
-            {
-                
-                Advance();
-            }
-        }else if (Input.GetMouseButtonDown(0)) {
-            if (DC_Triger == false)
-            {
-                DC_Triger = true;
-                Img_DialogueBar.SetActive(true);
-                ShowLine(_current);
-            }
-            else
-            {
-                Advance();
-                
-            }
+            Advance();
         }
+        
             
        
 //#endif
@@ -100,17 +80,9 @@ public class DialogueSimpleUI : MonoBehaviour, IPointerClickHandler
     // UI(Img_DialogueBar)를 클릭했을 때 진행
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (DC_Triger == false)
-        {
-            DC_Triger = true;
-            Img_DialogueBar.SetActive(true);
-            ShowLine(_current);
-        }
-        else
-        {
-            Advance();
-            
-        }
+       
+        Advance();
+
     }
 
     // === 진행 로직 ===
@@ -172,7 +144,7 @@ public class DialogueSimpleUI : MonoBehaviour, IPointerClickHandler
         _current = null;
         SetText(endText); // 빈 문자열이면 대화바만 남고 텍스트는 사라짐
         // 필요 시 여기서 대화 UI 비활성화 등 처리
-        // gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 
     void SetText(string content)
