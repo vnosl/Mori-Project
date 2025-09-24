@@ -8,7 +8,7 @@ public class DialogueLine
     public int? day;
     public string type;      // "line"
     public string speaker;
-    public string portrait;
+    //public string portrait;
     public string emotion;
     public string text;
     public string nextId;

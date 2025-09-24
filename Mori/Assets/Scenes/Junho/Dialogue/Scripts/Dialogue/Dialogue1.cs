@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [System.Serializable]
-public class Dialogue
+public class Dialogue1
 {
     [Tooltip("대사치는 캐릭터 이름")]
     public string name;
