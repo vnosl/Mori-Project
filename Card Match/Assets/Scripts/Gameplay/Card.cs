@@ -15,6 +15,7 @@ public class Card : MonoBehaviour
     private bool isFlipped = false;
     private bool isFlipping = false;
     private bool isMatched = false;
+    private bool isTarot = false;
 
     public int cardID;
 
@@ -31,6 +32,21 @@ public class Card : MonoBehaviour
     public void SetFrontSprite(Sprite sprite)
     {
         this.frontSprite = sprite;
+    }
+
+    public void SetTarot(Sprite front, Sprite back)
+    {
+        isTarot = true;
+        this.frontSprite = front;
+        this.backSprite = back;
+
+        if (cardRenderer) cardRenderer.sprite = backSprite;
+        isFlipped = false;
+        isMatched = false;
+    }
+    public bool GetIsTarot()
+    {
+        return this.isTarot;
     }
 
     public void FlipCard()
@@ -64,7 +80,7 @@ public class Card : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (!isFlipping && !isMatched && !isFlipped)
+        if (!isFlipping && !isMatched && !isFlipped && !isTarot)
         {
             GameManager.instance.CardClicked(this);
         }

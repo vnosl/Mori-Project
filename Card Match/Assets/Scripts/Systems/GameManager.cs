@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     private List<Card> allCards;
+    private Card tarotCard;
     private Card flippedCard;
     private bool isFlipping = false;
 
@@ -31,6 +32,13 @@ public class GameManager : MonoBehaviour
     private int totalMatches = 7;
     private int matchesFound = 0;
 
+    [SerializeField]
+    private int maxLives = 3;
+    private int lives;
+
+    [SerializeField]
+    private TextMeshProUGUI livesText;
+
     private void Awake()
     {
         if (instance == null)
@@ -45,11 +53,22 @@ public class GameManager : MonoBehaviour
         Board board = FindObjectOfType<Board>();
         allCards = board.getCards();
 
+        tarotCard = allCards.Find(c => c.GetIsTarot());
         currentTime = timeLimit;
+
+        lives = maxLives;
+        UpdateLivesUI();
 
         StartCoroutine("FlipAllCardsRoutine");
     }
 
+    void UpdateLivesUI()
+    {
+        if (livesText != null)
+        {
+            livesText.SetText($"Life: {lives}/{maxLives}");
+        }
+    }
     IEnumerator FlipAllCardsRoutine()
     {
         isFlipping = true;
@@ -79,6 +98,11 @@ public class GameManager : MonoBehaviour
     {
         foreach (Card card in allCards)
         {
+            if (card.GetIsTarot())
+            {
+                continue;
+            }
+
             card.FlipCard();
         }
     }
@@ -114,6 +138,10 @@ public class GameManager : MonoBehaviour
 
             if (matchesFound == totalMatches)
             {
+
+                yield return new WaitForSeconds(1f);
+                tarotCard.FlipCard();
+
                 GameOver(true);
             }
         }
@@ -123,6 +151,15 @@ public class GameManager : MonoBehaviour
 
             card1.FlipCard();
             card2.FlipCard();
+
+            lives = Mathf.Max(0, lives - 1);
+            UpdateLivesUI();
+
+            if (lives <= 0)
+            {
+                GameOver(false);
+                yield break;
+            }
 
             yield return new WaitForSeconds(0.4f);
         }
