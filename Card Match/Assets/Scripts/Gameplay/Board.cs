@@ -6,8 +6,9 @@ public class Board : MonoBehaviour
 {
     [SerializeField]
     private GameObject cardPrefab;
+    
     [SerializeField]
-    private Sprite[] cardSprites;
+    private List<Sprite> cardSpriteList = new List<Sprite>();
 
     [SerializeField]
     private Sprite tarotFrontSprite;
@@ -26,10 +27,45 @@ public class Board : MonoBehaviour
 
     void GenerateCardID()
     {
-        for (int i = 0; i < cardSprites.Length; i++)
+        cardIDList.Clear();
+
+        int rowCount = 3;
+        int colCount = 5;
+
+        int nonTarotSlots = rowCount * colCount - 1;
+        int neededPairs   = nonTarotSlots / 2;
+
+        int availableDesigns = cardSpriteList != null ? cardSpriteList.Count : 0;
+        if (availableDesigns <= 0)
         {
-            cardIDList.Add(i);
-            cardIDList.Add(i);
+            Debug.LogError("cardSpriteList가 비어있습니다. 카드 디자인을 에디터에 넣어주세요.");
+            return;
+        }
+
+        int pairCount = Mathf.Min(neededPairs, availableDesigns);
+
+        List<int> indices = new List<int>(availableDesigns);
+        for (int i = 0; i < availableDesigns; i++)
+        {
+            indices.Add(i);
+        }
+
+        for (int i = 0; i < indices.Count; i++)
+        {
+            int j = Random.Range(i, indices.Count);
+            (indices[i], indices[j]) = (indices[j], indices[i]);
+        }
+
+        for (int k = 0; k < pairCount; k++)
+        {
+            int id = indices[k];
+            cardIDList.Add(id);
+            cardIDList.Add(id);
+        }
+
+        if (neededPairs > availableDesigns)
+        {
+            Debug.LogWarning($"필요한 쌍 수({neededPairs})가 디자인 수({availableDesigns})보다 많아 {pairCount}쌍만 생성합니다.");
         }
     }
 
@@ -76,10 +112,13 @@ public class Board : MonoBehaviour
                 }
                 else
                 {
-                    int cardID = cardIDList[cardIndex++];
-                    card.SetCardID(cardID);
-                    card.SetFrontSprite(cardSprites[cardID]);
-                    card.name = $"Card_{cardID}";
+                    if (cardIndex < cardIDList.Count)
+                    {
+                        int cardID = cardIDList[cardIndex++];
+                        card.SetCardID(cardID);
+                        card.SetFrontSprite(cardSpriteList[cardID]);
+                        card.name = $"Card_{cardID}";
+                    }
                 }
 
                 cardList.Add(card);
