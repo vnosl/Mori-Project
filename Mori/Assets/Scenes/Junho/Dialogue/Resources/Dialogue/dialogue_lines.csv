@@ -1,6 +1,0 @@
-﻿id,event_id,day,type,speaker,emotion,text_ko,text_en,next_id,choice_Group
-L1,DAY1_START,1,line,Ghost,neutral,좋아! 1일차 시작이야.,"Alright, day 1 begins.",L2,
-L2,DAY1_START,1,line,Mori,neutral,준비는 됐어?,Are we ready?,L3,
-L3,OPEN_SHOP,1,line,Mori,smile,문을 열자,Let's open the shop.,L5,ST
-L4,TALK_GHOST,1,line,Ghost,worried,오늘 이상한 기운이 느겨져,I feel something strange today.,END,ST
-L5,DAY1_START,1,line,Mori,smile,오늘도 힘내보자,,END,
