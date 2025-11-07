@@ -10,46 +10,47 @@ VAR rep = 0
 LIST VISITORS = 손님, bob, chloe
 
 === visitor_alice ===
-#speaker:손님 #portrait:alice_happy
+#speaker:손님 #portrait:none
 안녕하세요! 오늘 하루는 어땠나요?
 * (좋았다) 
-    #sfx:select
+    #sfx:select #portrait:Boy1
     좋았어요! 기분이 상쾌하네요.
     -> alice_branch_good
 * (별로다)
+    #portrait:Boy1
     그럭저럭이요…
     -> alice_branch_bad
 
 = alice_branch_good
-#speaker:손님 #portrait:alice_smile
+#speaker:손님 #portrait:Lady1
 정말 다행이네요. 혹시 이 물건에 대해 알고 싶나요?
 + [물건 설명을 듣는다]
-    #speaker:손님
+    #speaker:손님 #portrait:Boy1
     이건 특별한 아이템이에요.
     ~ rep = rep + 1
     -> END
 + [지금은 괜찮다]
-    #speaker:손님
+    #speaker:손님 #portrait:Boy1
     알겠어요. 다음에요!
     -> END
 
 = alice_branch_bad
-#speaker:손님 #portrait:alice_sad
+#speaker:손님 #portrait:Lady1
 그런 날도 있죠… 힘내세요.
 -> END
 
 
 === visitor_bob ===
-#speaker:밥 #portrait:bob_normal
+#speaker:밥 #portrait:none
 오늘은 뭘 추천해주나요?
 * 따뜻한 차를 권한다
-    #speaker:밥 
+    #speaker:밥 #portrait:Boy1
     #scene:Game
     좋아요. 마음이 편안해지네요.
     ~ rep = rep + 1
     -> END
 * 차가운 음료를 권한다
-    #speaker:밥 
+    #speaker:밥 #portrait:Boy1
     #scene:Start Scene
     음… 오늘은 추운데요.
     ~ rep = rep - 1
@@ -57,13 +58,15 @@ LIST VISITORS = 손님, bob, chloe
 
 
 === visitor_chloe ===
-#speaker:클로이 #portrait:chloe_think #scene:BackRoom
+#speaker:클로이 #portrait:none
 여긴 조용하네요. 잠깐 얘기해도 될까요?
 + [예, 들어드릴게요]
-    #speaker:클로이
+    #speaker:클로이 #portrait:Boy1
     고마워요. 사실…
+    #portrait:none
     -> END
 + [죄송해요, 바빠요]
-    #speaker:클로이
+    #speaker:클로이 #portrait:Boy1
     이해해요. 다음에요.
+    #portrait:none
     -> END
