@@ -74,7 +74,7 @@ public class DayController : MonoBehaviour
         // 대화 씬이 아니면 대화 씬으로 이동
         if (SceneManager.GetActiveScene().name != dialogueSceneName)
         {
-            SceneManager.LoadScene(dialogueSceneName, LoadSceneMode.Single);
+            //SceneManager.LoadScene(dialogueSceneName, LoadSceneMode.Single);
             // OnSceneLoaded에서 DialogueManager를 찾아 이벤트 연결 → 이후 StartVisitorAtKnot 호출
             StartCoroutine(WaitAndStartDialogue());
             return;
