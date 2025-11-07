@@ -8,7 +8,7 @@ public class SceneLoader : MonoBehaviour
     {
         // SceneManager를 사용하여 지정된 이름의 씬을 로드합니다.
         // 씬 이름이 정확해야 합니다.
-        SceneManager.LoadScene("Dialogue");
+        SceneManager.LoadScene("Dialogue Scene");
     }
 
     public void ExitGame()
@@ -19,6 +19,5 @@ public class SceneLoader : MonoBehaviour
         Application.Quit(); // 어플리케이션 종료
 #endif
     }
-
 
 }

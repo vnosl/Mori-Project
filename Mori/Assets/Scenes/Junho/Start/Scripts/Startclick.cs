@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Startclick : MonoBehaviour
+public class NewMonoBehaviourScript : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -13,7 +13,7 @@ public class Startclick : MonoBehaviour
     void Update()
     {
         if (Input.GetMouseButtonDown(0)) {
-            SceneManager.LoadScene("Dialogue");
+            SceneManager.LoadScene("Dialogue Scene");
         }
     }
 }
