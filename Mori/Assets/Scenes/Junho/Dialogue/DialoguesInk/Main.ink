@@ -10,35 +10,45 @@ VAR rep = 0
 LIST VISITORS = 손님, bob, chloe
 
 === visitor_alice ===
-#speaker:손님 #portrait:none
-안녕하세요! 오늘 하루는 어땠나요?
-* (좋았다) 
-    #sfx:select #portrait:Boy1
-    좋았어요! 기분이 상쾌하네요.
-    -> alice_branch_good
-* (별로다)
-    #portrait:Boy1
-    그럭저럭이요…
-    -> alice_branch_bad
-
-= alice_branch_good
-#speaker:손님 #portrait:Lady1
-정말 다행이네요. 혹시 이 물건에 대해 알고 싶나요?
-+ [물건 설명을 듣는다]
-    #speaker:손님 #portrait:Boy1
-    이건 특별한 아이템이에요.
-    ~ rep = rep + 1
-    -> END
-+ [지금은 괜찮다]
-    #speaker:손님 #portrait:Boy1
-    알겠어요. 다음에요!
-    -> END
-
-= alice_branch_bad
-#speaker:손님 #portrait:Lady1
-그런 날도 있죠… 힘내세요.
+#speaker:여자2 #portrait:Lady1
+...
+안녕하세요
+연애와 관련된 일도 점 쳐줄 수 있죠?
+#speaker:모리 #partrait:none
+* [그렇다]
+    저, 운명의 사람을 만난 것 같아요!
+    ->spk
+* [당연하죠]
+    저, 운명의 사람을 만난 것 같아요!
+    ->spk
+    
+= spk
+#speaker:여자2 #portrait:Lady1
+저번 파티 때 만난 신사분인데요, 어찌나 색다르던지!
+마치 제게 더 넓은 세계를 보여줄 것만 같아요, 그이는.
+#speaker:유령 #portrait:Boy1
+아는 패턴이군..
+#speaker:여자2 #portrait:Lady1
+만난 지는 얼마 되지 않았지만... 저는 확신해요!
+#speaker:유령 #portrait:Boy1
+천생연분이라고?
+#speaker:여자2 #portrait:Lady1
+우리 둘은 천생연분이라는 걸!
+(그녀는 얼굴을 붉히며 급히 말을 마무리 지었다.)
+그..그래서 연애 관련해서, 뭐든 봐 주실 수 있을까 해서요.
+#speaker:모리 #partrait:none
+* [의뢰를 받지 않는다.]
+-> no
+* [의뢰를 받는다.]
 -> END
 
+= no
+#speaker:유령 #portrait:Boy1
+철 없는 아가씨로구만.
+#speaker:여자2 #portrait:Lady1
+어, 어떻게 그럴 수가!
+#portrait:none
+-> END
 
 === visitor_bob ===
 #speaker:밥 #portrait:none
