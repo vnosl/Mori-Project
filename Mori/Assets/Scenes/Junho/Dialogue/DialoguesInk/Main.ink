@@ -12,20 +12,20 @@ LIST VISITORS = 손님, bob, chloe
 === visitor_alice ===
 #speaker:여자2 #portrait:Lady1
 ...
-안녕하세요
-연애와 관련된 일도 점 쳐줄 수 있죠?
+"안녕하세요"
+"연애와 관련된 일도 점 쳐줄 수 있죠?"
 #speaker:모리 #partrait:none
 * [그렇다]
-    저, 운명의 사람을 만난 것 같아요!
+    "저, 운명의 사람을 만난 것 같아요!"
     ->spk
 * [당연하죠]
-    저, 운명의 사람을 만난 것 같아요!
+    "저, 운명의 사람을 만난 것 같아요!"
     ->spk
     
 = spk
 #speaker:여자2 #portrait:Lady1
-저번 파티 때 만난 신사분인데요, 어찌나 색다르던지!
-마치 제게 더 넓은 세계를 보여줄 것만 같아요, 그이는.
+"저번 파티 때 만난 신사분인데요, 어찌나 색다르던지!"
+"마치 제게 더 넓은 세계를 보여줄 것만 같아요, 그이는."
 #speaker:유령 #portrait:Boy1
 아는 패턴이군..
 #speaker:여자2 #portrait:Lady1
