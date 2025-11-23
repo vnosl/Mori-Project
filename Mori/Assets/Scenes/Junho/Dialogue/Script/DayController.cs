@@ -14,7 +14,7 @@ public class DayController : MonoBehaviour
 
     [Header("Config")]
     [SerializeField, Range(1, 10)] int visitorsPerDay = 3;
-    [SerializeField] List<string> visitorKnotNames = new() { "visitor_alice", "visitor_bob", "visitor_chloe" };
+    [SerializeField] List<string> visitorKnotNames = new() { "customer1", "customer2", "customer3" };
     [SerializeField] string dialogueSceneName = "Game";         // 대화가 있는 씬 이름
     [SerializeField] string intermissionSceneName = "Intermission"; // 중간 UI/미니게임 씬 이름
     [SerializeField] string endOfDaySceneName = "EndOfDay";     // 하루 요약/세이브 씬 이름
