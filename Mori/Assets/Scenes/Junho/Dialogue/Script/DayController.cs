@@ -31,13 +31,11 @@ public class DayController : MonoBehaviour
 
     public enum EventResult { None, Success, Fail }
     public EventResult lastEventResult { get; private set; } = EventResult.None;
-    public int lastEventScore { get; private set; } = 0;
-    public string lastEventTag { get; private set; } = "";
 
     private DialogueManager dialogue;
 
+    // 이번 사이클(END 한 번)만 인터미션 스킵
     bool skipIntermissionOnce = false;
-    
 
     void Awake()
     {
@@ -50,12 +48,12 @@ public class DayController : MonoBehaviour
 
     void Start()
     {
-        if (autoStart) StartDay1();   // ← 자동 시작을 옵션으로
+        if (autoStart) StartDay1();
     }
 
     public void BeginDay1FromMenu()
     {
-        StartDay1();  // 내부에서 Dialogue 씬 로드까지 처리됨
+        StartDay1();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -113,19 +111,15 @@ public class DayController : MonoBehaviour
         var initialVars = new Dictionary<string, object>
         {
             ["event_success"] = (lastEventResult == EventResult.Success),
-            ["event_score"] = lastEventScore,
-            ["event_tag"] = lastEventTag
+            ["event_has_result"] = (lastEventResult != EventResult.None),
         };
 
-        // 소비
+        // 결과는 주입과 동시에 소비(다음 사이클에서 새 결과로 덮어쓰기)
         lastEventResult = EventResult.None;
-        lastEventScore = 0;
-        lastEventTag = "";
 
         dialogue.StartStoryAtKnot(knot, initialVars);
     }
 
-    
     public void RequestSkipIntermissionOnce() => skipIntermissionOnce = true;
 
     void OnDialogueFinished()
@@ -136,7 +130,7 @@ public class DayController : MonoBehaviour
         {
             var next = queue.Peek();
 
-            // ★ 이번 턴 스킵 요청이 있거나, 다음이 엔딩 노드면 인터미션 없이 바로 다음 노드로
+            // 엔딩 노드이거나 이번 턴 스킵 요청이 있으면 인터미션 없이 바로 다음으로
             if (skipIntermissionOnce || IsEndNode(next))
             {
                 skipIntermissionOnce = false; // 한 번 쓰고 초기화
@@ -153,6 +147,7 @@ public class DayController : MonoBehaviour
             EndDay();
         }
     }
+
     bool IsEndNode(string knotName)
     {
         // 네이밍 규칙에 맞춰 판정 (원하면 리스트/해시셋으로 관리)
@@ -165,15 +160,16 @@ public class DayController : MonoBehaviour
         SceneManager.LoadScene(intermissionSceneName, LoadSceneMode.Single);
     }
 
-    public void NotifyIntermissionDone(bool success, int score = 0, string tag = "")
+    // 미니게임 씬에서 성공/실패만 보고
+    public void NotifyIntermissionDone(bool success)
     {
         lastEventResult = success ? EventResult.Success : EventResult.Fail;
-        lastEventScore = score;
-        lastEventTag = tag;
-
         phase = Phase.Dialogue;
         EnsureOnDialogueSceneAndStart();
     }
+    
+    public void NotifyIntermissionDone(bool success, int score, string tag)
+    => NotifyIntermissionDone(success);
 
     void EndDay()
     {
@@ -181,6 +177,4 @@ public class DayController : MonoBehaviour
         SceneManager.LoadScene(endOfDaySceneName, LoadSceneMode.Single);
         // 씬 이동 없이 패널로 끝내고 싶다면 위 줄을 주석 처리하고 UI 이벤트를 쏘면 됨.
     }
-
-
 }

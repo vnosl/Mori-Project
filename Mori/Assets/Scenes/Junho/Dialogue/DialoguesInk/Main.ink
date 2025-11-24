@@ -1,4 +1,5 @@
 VAR event_success = false
+VAR event_has_result = false
 VAR event_score = 0
 VAR event_tag = ""
 
@@ -148,7 +149,7 @@ VAR event_tag = ""
 그보다 말이지 너, 냅다 점 부터 보지 말란 말야.
 #speaker:유령
 손님이 어떤 행색을 갖췄는지도 좀 보고, 대화를 해서 정보도 좀 얻고...
-#speaker:유령 smiling_default
+#speaker:유령 #portrait:smiling_default
 이런 게 다 점술의 결과를 설명 할 때 유용한 정보니까!
 + [사기 수법 같다]
     -> fraud
