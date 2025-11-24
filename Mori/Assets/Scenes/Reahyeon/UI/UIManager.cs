@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        // ½ÃÀÛ »óÅÂ: ¸ŞÀÎ¸¸ ÄÑ±â (¾ÈÀü ÃÊ±âÈ­)
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½Ñ±ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­)
         if (MainMenuPanel) MainMenuPanel.SetActive(false);
         if (MapPanel) MapPanel.SetActive(false);
         if (ShopPanel) ShopPanel.SetActive(false);
@@ -48,7 +49,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // ¹öÆ°¿¡¼­ È£ÃâÇÒ °ø°³ ÇÔ¼öµé
+    // ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½
     public void ShowMainMenu() { ShowPanel(MainMenuPanel); }
     public void ShowMap() { ShowPanel(MapPanel); }
     public void ShowShop() { ShowPanel(ShopPanel); }
@@ -65,7 +66,12 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("µÚ·Î °¥ ÆĞ³ÎÀÌ ¾ø½À´Ï´Ù.");
+            Debug.Log("ï¿½Ú·ï¿½ ï¿½ï¿½ ï¿½Ğ³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
         }
+    }
+
+    public void LoadGameScene()
+    {
+        SceneManager.LoadScene("CardGame"); // ì”¬ ì´ë¦„ or build index
     }
 }

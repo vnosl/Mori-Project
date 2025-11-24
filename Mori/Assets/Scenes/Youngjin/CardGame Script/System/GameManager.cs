@@ -7,17 +7,17 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    // UI ¿¬°á (Canvas ÂÊ¿¡ ÀÖ´Â GameUI)
+    // UI ï¿½ï¿½ï¿½ï¿½ (Canvas ï¿½Ê¿ï¿½ ï¿½Ö´ï¿½ GameUI)
     [Header("UI")]
     [SerializeField] private GameUI ui;
 
-    // °ÔÀÓ ·ê ¼³Á¤
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     [Header("Rules")]
-    [SerializeField] private float timeMax = 30f;  // ÀüÃ¼ Á¦ÇÑ ½Ã°£
-    [SerializeField] private int need = 7;         // ¸ÂÃç¾ß ÇÏ´Â Æä¾î ¼ö (0ÀÌ¸é ÀÚµ¿ °è»ê)
-    [SerializeField] private int maxHP = 5;        // ÃÖ´ë HP
+    [SerializeField] private float timeMax = 30f;  // ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+    [SerializeField] private int need = 7;         // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ (0ï¿½Ì¸ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½)
+    [SerializeField] private int maxHP = 5;        // ï¿½Ö´ï¿½ HP
 
-    // Å¸·Î Ä«µå ½ºÇÁ¶óÀÌÆ® (Á÷Á¢ ÁöÁ¤ÇÏ°Å³ª, ¾Æ·¡ ¸®½ºÆ®¿¡¼­ °í¸£´Â ¹æ½Ä)
+    // Å¸ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½, ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)
     [Header("Tarot (Pick one in Inspector)")]
     [SerializeField] private Sprite tarotFront;
     [SerializeField] private Sprite tarotBack;
@@ -30,66 +30,66 @@ public class GameManager : MonoBehaviour
         public Sprite back;
     }
 
-    // ¿©·¯ Å¸·Î Ä«µå Áß °ñ¶ó ¾²°í ½ÍÀ» ¶§
+    // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
     [Header("Tarot Variants (Optional)")]
     [SerializeField] private List<TarotVar> tarotList = new List<TarotVar>();
-    [SerializeField] private int tarotIdx = 0;  // tarotList Áß ¸î ¹øÂ°¸¦ ¾µÁö
+    [SerializeField] private int tarotIdx = 0;  // tarotList ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-    // ±â¹Í ¼³Á¤
+    // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     [Header("Gimmicks (Manual)")]
-    [SerializeField] private bool gPos = true;    // Ã³À½¿¡ ÀüÃ¼ º¸¿©ÁØ µÚ, ÁÂ¿ì À§Ä¡ ¹ÝÀü
-    [SerializeField] private bool gSpr = false;   // °ÔÀÓ ½ÃÀÛ Àü¿¡, ÇÑ ½Ö Áß ÇÑ Àå¸¸ ÁÂ¿ì¹ÝÀü
-    [SerializeField] private bool gShift = false; // Å¬¸¯ÇÒ ¶§¸¶´Ù ÁÙ ´ÜÀ§·Î Ä«µå ÀÌµ¿
+    [SerializeField] private bool gPos = true;    // Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½, ï¿½Â¿ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
+    [SerializeField] private bool gSpr = false;   // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½å¸¸ ï¿½Â¿ï¿½ï¿½ï¿½ï¿½
+    [SerializeField] private bool gShift = false; // Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½Ìµï¿½
 
-    // ±â¹Í ¿¬Ãâ ¼Óµµ
+    // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½
     [Header("Gimmick Timing")]
     [SerializeField] private float mirrorMoveTime = 0.25f;
     [SerializeField] private Ease mirrorEase = Ease.InOutQuad;
 
-    // Ä«µå µÚÁý±â Å¸ÀÌ¹Ö
+    // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ì¹ï¿½
     [Header("Timing")]
-    [SerializeField] private float clickFlipDelay = 0.15f;   // Å¬¸¯ ÈÄ ½ÇÁ¦ µÚÁý±â ½ÃÀÛ±îÁöÀÇ µô·¹ÀÌ
+    [SerializeField] private float clickFlipDelay = 0.15f;   // Å¬ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    // È¿°úÀ½ ¼³Á¤
+    // È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     [Header("SFX")]
     [SerializeField] private AudioSource sfxSource;
-    [SerializeField] private AudioClip sfxFlip;             // Ä«µå ÇÑ Àå ¶Ç´Â ÀüÃ¼¸¦ µÚÁýÀ» ¶§
-    [SerializeField] private AudioClip sfxMatchSuccess;     // Æä¾î ¸ÂÃèÀ» ¶§
-    [SerializeField] private AudioClip sfxMismatch;         // Æä¾î ½ÇÆÐÇßÀ» ¶§
-    [SerializeField] private AudioClip sfxGameOverSuccess;  // ¸¶Áö¸· Å¸·Î±îÁö ¼º°øÇßÀ» ¶§
-    [SerializeField] private AudioClip sfxGameOverFail;     // ½Ã°£ÃÊ°ú or HP 0À¸·Î ½ÇÆÐÇßÀ» ¶§
+    [SerializeField] private AudioClip sfxFlip;             // Ä«ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    [SerializeField] private AudioClip sfxMatchSuccess;     // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    [SerializeField] private AudioClip sfxMismatch;         // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    [SerializeField] private AudioClip sfxGameOverSuccess;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    [SerializeField] private AudioClip sfxGameOverFail;     // ï¿½Ã°ï¿½ï¿½Ê°ï¿½ or HP 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 
-    // ³»ºÎ »óÅÂ
-    private List<Card> cards;   // º¸µå À§ÀÇ ¸ðµç Ä«µå
-    private Card tarotCard;     // Áß¾Ó Å¸·Î Ä«µå
-    private Card flippedCard;   // Ã¹ ¹øÂ°·Î ¼±ÅÃÇÑ Ä«µå
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private List<Card> cards;   // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½
+    private Card tarotCard;     // ï¿½ß¾ï¿½ Å¸ï¿½ï¿½ Ä«ï¿½ï¿½
+    private Card flippedCard;   // Ã¹ ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½
 
-    private bool isFlipping = false; // Ä«µå µÚÁý±â ¿¬Ãâ ÁßÀÎÁö
-    private bool isShifting = false; // ÁÙ ÀÌµ¿ ¿¬Ãâ ÁßÀÎÁö
-    private bool isGameOver = false; // °ÔÀÓÀÌ ³¡³µ´ÂÁö
+    private bool isFlipping = false; // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    private bool isShifting = false; // ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    private bool isGameOver = false; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    private float timeCur; // ³²Àº ½Ã°£
-    private int found = 0; // ¸ÂÃá Æä¾î ¼ö
-    private int hp;        // ÇöÀç HP
+    private float timeCur; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+    private int found = 0; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½
+    private int hp;        // ï¿½ï¿½ï¿½ï¿½ HP
 
-    // À¯´ÏÆ¼ ±âº» ¶óÀÌÇÁ»çÀÌÅ¬
+    // ï¿½ï¿½ï¿½ï¿½Æ¼ ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¬
     private void Awake()
     {
         if (instance == null) instance = this;
 
-        // ¾À¿¡¼­ Board¸¦ Ã£¾Æ¼­, ¿©±â¼­ Á¤ÇÑ Å¸·Î ¾Õ/µÞ¸éÀ» ³Ñ°ÜÁØ´Ù
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Boardï¿½ï¿½ Ã£ï¿½Æ¼ï¿½, ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½/ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½
         var board = FindObjectOfType<Board>();
         if (board != null)
         {
             Sprite f = null, b = null;
 
-            // 1¼øÀ§: inspector¿¡¼­ tarotFront / tarotBack Á÷Á¢ ³ÖÀº °Í
+            // 1ï¿½ï¿½ï¿½ï¿½: inspectorï¿½ï¿½ï¿½ï¿½ tarotFront / tarotBack ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
             if (tarotFront != null && tarotBack != null)
             {
                 f = tarotFront;
                 b = tarotBack;
             }
-            // 2¼øÀ§: tarotList¿¡¼­ ÇÏ³ª °ñ¶ó ¾²±â
+            // 2ï¿½ï¿½ï¿½ï¿½: tarotListï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             else if (tarotList != null && tarotList.Count > 0)
             {
                 tarotIdx = Mathf.Clamp(tarotIdx, 0, tarotList.Count - 1);
@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            // µÑ Áß ÇÏ³ª¶óµµ ÀÖÀ¸¸é º¸µå¿¡ Àü´Þ
+            // ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½
             if (f != null || b != null)
                 board.ConfigureTarot(f, b);
         }
@@ -112,13 +112,13 @@ public class GameManager : MonoBehaviour
         var board = FindObjectOfType<Board>();
         cards = board.getCards();
 
-        // 1Â÷: Ä«µå ³»ºÎ isTarot ÇÃ·¡±×·Î Å¸·Î Ä«µå Ã£±â
+        // 1ï¿½ï¿½: Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ isTarot ï¿½Ã·ï¿½ï¿½×·ï¿½ Å¸ï¿½ï¿½ Ä«ï¿½ï¿½ Ã£ï¿½ï¿½
         tarotCard = cards.Find(c => c.GetIsTarot());
-        // 2Â÷: È¤½Ã ÇÃ·¡±×°¡ ¾È ¼ÂÆÃµÇ¾î ÀÖ¾îµµ, ÀÌ¸§ÀÌ "TarotCard"¸é Å¸·Î·Î ÀÎ½Ä
+        // 2ï¿½ï¿½: È¤ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½×°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ÃµÇ¾ï¿½ ï¿½Ö¾îµµ, ï¿½Ì¸ï¿½ï¿½ï¿½ "TarotCard"ï¿½ï¿½ Å¸ï¿½Î·ï¿½ ï¿½Î½ï¿½
         if (tarotCard == null)
             tarotCard = cards.Find(c => c.name == "TarotCard");
 
-        // need°¡ 0 ÀÌÇÏÀÌ¸é, ºñÅ¸·Î Ä«µå ¼ö¸¦ º¸°í ÀÚµ¿À¸·Î Æä¾î ¼ö °è»ê
+        // needï¿½ï¿½ 0 ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½, ï¿½ï¿½Å¸ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
         if (need <= 0)
         {
             int nonTarotCount = 0;
@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
                     nonTarotCount++;
 
             need = Mathf.Max(1, nonTarotCount / 2);
-            Debug.Log("[GameManager] need °ªÀÌ 0ÀÌ¶ó¼­ ÀÚµ¿À¸·Î " + need + " Æä¾î·Î ¼³Á¤Çß½À´Ï´Ù.");
+            Debug.Log("[GameManager] need ï¿½ï¿½ï¿½ï¿½ 0ï¿½Ì¶ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ " + need + " ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½.");
         }
 
         timeCur = timeMax;
@@ -139,17 +139,17 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("GameManager.ui °¡ ºñ¾î ÀÖ½À´Ï´Ù. Canvas¿¡ ÀÖ´Â GameUI¸¦ ÇÒ´çÇØ ÁÖ¼¼¿ä.");
+            Debug.LogWarning("GameManager.ui ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½. Canvasï¿½ï¿½ ï¿½Ö´ï¿½ GameUIï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½.");
         }
 
-        // °ÔÀÓ ½ÃÀÛ Àü¿¡ ÇÑ ½ÖÀÇ Ä«µå Áß ÇÑ ÀåÀ» ÁÂ¿ì¹ÝÀü½ÃÅ°´Â ±â¹Í
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½
         if (gSpr) PreMirror();
 
-        // ÀüÃ¼ °ø°³ ¡æ ´Ù½Ã °¡¸² ¡æ À§Ä¡ ¹ÝÀü ¡æ Å¸ÀÌ¸Ó ½ÃÀÛ
+        // ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
         StartCoroutine(FlipAllRoutine());
     }
 
-    // ÀÌ Ä«µå°¡ Å¸·Î Ä«µåÀÎÁö ÆÇº°ÇÏ´Â ÇïÆÛ ÇÔ¼ö
+    // ï¿½ï¿½ Ä«ï¿½å°¡ Å¸ï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Çºï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     private bool IsTarot(Card c)
     {
         if (c == null) return false;
@@ -157,7 +157,7 @@ public class GameManager : MonoBehaviour
         return c.GetIsTarot();
     }
 
-    // È¿°úÀ½ Àç»ý ÇïÆÛ (ÇÇÄ¡ ¾à°£ ·£´ý)
+    // È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Ä¡ ï¿½à°£ ï¿½ï¿½ï¿½ï¿½)
     private void PlaySfx(AudioClip clip, float pitchMin = 0.98f, float pitchMax = 1.02f)
     {
         if (clip == null || sfxSource == null) return;
@@ -166,34 +166,34 @@ public class GameManager : MonoBehaviour
         sfxSource.PlayOneShot(clip);
     }
 
-    // °ÔÀÓ ½ÃÀÛ ½Ã ÇÑ ¹ø¸¸ µµ´Â ·çÆ¾: ÀüÃ¼ µÚÁý±â ¿¬Ãâ
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¾: ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     private IEnumerator FlipAllRoutine()
     {
         isFlipping = true;
         yield return new WaitForSeconds(0.5f);
 
-        // 1) ÀüÃ¼ ¾Õ¸é °ø°³
+        // 1) ï¿½ï¿½Ã¼ ï¿½Õ¸ï¿½ ï¿½ï¿½ï¿½ï¿½
         PlaySfx(sfxFlip, 0.97f, 1.03f);
         yield return new WaitForSeconds(clickFlipDelay);
         FlipNonTarot();
         yield return new WaitForSeconds(3f);
 
-        // 2) ´Ù½Ã ÀüÃ¼ µÞ¸é
+        // 2) ï¿½Ù½ï¿½ ï¿½ï¿½Ã¼ ï¿½Þ¸ï¿½
         PlaySfx(sfxFlip, 0.97f, 1.03f);
         yield return new WaitForSeconds(clickFlipDelay);
         FlipNonTarot();
         yield return new WaitForSeconds(0.45f);
 
-        // 3) ±â¹ÍÀÌ ÄÑÁ® ÀÖÀ¸¸é, µÞ¸é »óÅÂ¿¡¼­ ÁÂ¿ì À§Ä¡ ¹ÝÀü
+        // 3) ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ ï¿½Â¿ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
         if (gPos) yield return StartCoroutine(MirrorPos());
 
         isFlipping = false;
 
-        // 4) Á¦ÇÑ ½Ã°£ Ä«¿îÆ®´Ù¿î ½ÃÀÛ
+        // 4) ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ Ä«ï¿½ï¿½Æ®ï¿½Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½
         StartCoroutine(Timer());
     }
 
-    // Á¦ÇÑ ½Ã°£ °ü¸®
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
     private IEnumerator Timer()
     {
         while (timeCur > 0f && !isGameOver)
@@ -205,37 +205,37 @@ public class GameManager : MonoBehaviour
 
         if (!isGameOver)
         {
-            // ½Ã°£ÃÊ°ú: º¸µå¸¦ Àá±ñ º¸¿©ÁØ µÚ ½ÇÆÐ Ã³¸®
+            // ï¿½Ã°ï¿½ï¿½Ê°ï¿½: ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
             yield return new WaitForSeconds(1.0f);
             PlaySfx(sfxGameOverFail, 0.99f, 1.01f);
             GameOver(false);
         }
     }
 
-    // Ä«µå¿¡¼­ Å¬¸¯µÇ¾úÀ» ¶§ È£Ãâ
+    // Ä«ï¿½å¿¡ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½
     public void CardClicked(Card c)
     {
-        // ¿¬Ãâ ÁßÀÌ°Å³ª, °ÔÀÓÀÌ ÀÌ¹Ì ³¡³µ°Å³ª, ÁÙ ÀÌµ¿ ÁßÀÌ¸é ÀÔ·Â ¹«½Ã
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°Å³ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½, ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (isFlipping || isGameOver || isShifting) return;
 
-        // ¼±ÅÃ ºñÁÖ¾ó ¸ÕÀú ÄÑ±â
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ö¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ±ï¿½
         c.SetSelected(true);
 
-        // Å¬¸¯ Áï½Ã È¿°úÀ½ Àç»ý
+        // Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         PlaySfx(sfxFlip, 0.97f, 1.03f);
 
-        // ½ÇÁ¦ µÚÁý±â´Â ¾à°£ µô·¹ÀÌ ÈÄ¿¡ ½ÃÀÛ
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½à°£ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½
         StartCoroutine(FlipCardAfterDelay(c));
 
-        // ÁÙ ÀÌµ¿ ±â¹ÍÀÌ ÄÑÁ® ÀÖÀ¸¸é, ´ÙÀ½ ÇÁ·¹ÀÓ¿¡ ÇÑ Ä­¾¿ ÀÌµ¿
+        // ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½ ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½Ìµï¿½
         if (gShift) StartCoroutine(ShiftNextFrame());
 
-        // Ã¹ ¹øÂ° ¼±ÅÃÀÎÁö µÎ ¹øÂ° ¼±ÅÃÀÎÁö¿¡ µû¶ó ºÐ±â
+        // Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½
         if (flippedCard == null) flippedCard = c;
         else StartCoroutine(Check(flippedCard, c));
     }
 
-    // Å¬¸¯ ÈÄ ¾à°£ ±â´Ù·È´Ù°¡ Ä«µå µÚÁý´Â ÄÚ·çÆ¾
+    // Å¬ï¿½ï¿½ ï¿½ï¿½ ï¿½à°£ ï¿½ï¿½Ù·È´Ù°ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½Æ¾
     private IEnumerator FlipCardAfterDelay(Card c)
     {
         yield return new WaitForSeconds(clickFlipDelay);
@@ -244,38 +244,38 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ShiftNextFrame()
     {
-        // ÇÑ ÇÁ·¹ÀÓ ±â´Ù·È´Ù°¡ ÁÙ ÀÌµ¿ Ã³¸®
+        // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù·È´Ù°ï¿½ ï¿½ï¿½ ï¿½Ìµï¿½ Ã³ï¿½ï¿½
         yield return null;
         ShiftOnce();
     }
 
-    // µÎ ÀåÀÇ Ä«µå¸¦ ºñ±³ÇÏ´Â ·çÆ¾
+    // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½å¸¦ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Æ¾
     private IEnumerator Check(Card a, Card b)
     {
         isFlipping = true;
 
         if (a.cardID == b.cardID)
         {
-            // ¸ÅÄª ¼º°ø
+            // ï¿½ï¿½Äª ï¿½ï¿½ï¿½ï¿½
             a.SetMatched();
             b.SetMatched();
             found++;
 
-            // µÎ Ä«µå°¡ ¿­¸° »óÅÂ¸¦ Àá±ñ º¸¿©ÁØ ÈÄ, ¼º°ø È¿°úÀ½ Àç»ý
+            // ï¿½ï¿½ Ä«ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
             yield return new WaitForSeconds(0.4f);
             PlaySfx(sfxMatchSuccess, 0.98f, 1.02f);
 
-            // ¾Õ¸é »óÅÂ¸¦ º¸ÀåÇÏ°í, Àá±ñ À¯Áö ÈÄ ÀÚ¿¬½º·´°Ô ÅðÀå
+            // ï¿½Õ¸ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             yield return StartCoroutine(ShowPairThenFade(a, b, 0.8f, 0.35f, 0.92f));
 
             if (found == need)
             {
-                // ¸ðµç Æä¾î¸¦ ´Ù ¸ÂÃá °æ¿ì, ¿£µù ¿¬Ãâ
+                // ï¿½ï¿½ï¿½ ï¿½ï¿½î¸¦ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-                // ¸¶Áö¸· Æä¾î°¡ »ç¶óÁø µÚ ¾à°£ÀÇ Á¤Àû
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½à°£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 yield return new WaitForSeconds(0.4f);
 
-                // Å¸·Î Ä«µå µÚÁý±â: flip »ç¿îµå ¸ÕÀú ¡æ µô·¹ÀÌ ÈÄ ½ÇÁ¦ Flip
+                // Å¸ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: flip ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Flip
                 if (tarotCard != null)
                 {
                     PlaySfx(sfxFlip, 0.97f, 1.03f);
@@ -283,10 +283,10 @@ public class GameManager : MonoBehaviour
                     tarotCard.FlipCard();
                 }
 
-                // Å¸·Î µÚÁý±â ¾Ö´Ï¸ÞÀÌ¼ÇÀÌ ³¡³¯ ¶§±îÁö ´ë±â
+                // Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
                 yield return new WaitForSeconds(0.45f);
 
-                // Å¬¶óÀÌ¸Æ½º¸¦ Á¶±Ý ´Ê°Ô º¸¿©ÁÖ±â À§ÇØ ¿©À¯¸¦ µÐ´Ù
+                // Å¬ï¿½ï¿½ï¿½Ì¸Æ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð´ï¿½
                 yield return new WaitForSeconds(1.25f);
 
                 PlaySfx(sfxGameOverSuccess, 0.99f, 1.01f);
@@ -296,37 +296,37 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // ¸ÅÄª ½ÇÆÐ
+            // ï¿½ï¿½Äª ï¿½ï¿½ï¿½ï¿½
 
-            // 1) µÎ Ä«µå°¡ ¾Õ¸é »óÅÂ·Î Àá±ñ ´õ º¸ÀÌ°Ô ÇÑ´Ù
+            // 1) ï¿½ï¿½ Ä«ï¿½å°¡ ï¿½Õ¸ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½Ñ´ï¿½
             yield return new WaitForSeconds(1.0f);
 
-            // 2) µÚÁý±â Á÷Àü¿¡ ¼±ÅÃ ÇÏÀÌ¶óÀÌÆ®¸¦ ¸ÕÀú ²ö´Ù
+            // 2) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             a.SetSelected(false);
             b.SetSelected(false);
             yield return new WaitForSeconds(0.12f);
 
-            // 3) µÞ¸éÀ¸·Î ´Ù½Ã µÚÁý±â
+            // 3) ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             a.FlipCard();
             b.FlipCard();
 
-            // 4) ½ÇÆÐ È¿°úÀ½ Àç»ý
+            // 4) ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
             PlaySfx(sfxMismatch, 0.96f, 1.04f);
 
-            // 5) HP °¨¼Ò ¹× UI °»½Å
+            // 5) HP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½
             hp = Mathf.Max(0, hp - 1);
             if (ui != null) ui.UpdateHP(hp);
 
             if (hp <= 0)
             {
-                // HP 0ÀÌ¸é °ÔÀÓ¿À¹ö: Àá±ñ º¸µå¸¦ º¸¿©ÁÖ°í ½ÇÆÐ Ã³¸®
+                // HP 0ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
                 yield return new WaitForSeconds(1.0f);
                 PlaySfx(sfxGameOverFail, 0.99f, 1.01f);
                 GameOver(false);
                 yield break;
             }
 
-            // 6) Ä«µå°¡ ¿ÏÀüÈ÷ µÞ¸éÀ¸·Î µ¹¾Æ°¥ ¶§±îÁö ÅÛÆ÷ ¿©À¯¸¦ ÁÜ
+            // 6) Ä«ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
             yield return new WaitForSeconds(0.45f);
         }
 
@@ -334,7 +334,7 @@ public class GameManager : MonoBehaviour
         flippedCard = null;
     }
 
-    // Ä«µå°¡ ¾Õ¸éÀÌ µÇµµ·Ï º¸ÀåÇØ ÁÖ´Â º¸Á¶ ÄÚ·çÆ¾
+    // Ä«ï¿½å°¡ ï¿½Õ¸ï¿½ï¿½ï¿½ ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½Æ¾
     private IEnumerator EnsureFaceUp(Card c)
     {
         if (!c.IsFaceUp()) c.FlipCard();
@@ -348,7 +348,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // ¸ÅÄªµÈ µÎ Ä«µå¸¦ Àá±ñ º¸¿©ÁÖ°í, ÀÚ¿¬½º·´°Ô »ç¶óÁö°Ô ÇÏ´Â ·çÆ¾
+    // ï¿½ï¿½Äªï¿½ï¿½ ï¿½ï¿½ Ä«ï¿½å¸¦ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½, ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½Æ¾
     private IEnumerator ShowPairThenFade(Card a, Card b, float hold, float fade, float shrink)
     {
         yield return StartCoroutine(EnsureFaceUp(a));
@@ -360,7 +360,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(fade);
     }
 
-    // °ÔÀÓ ½ÃÀÛ Àü ±â¹Í: °°Àº Ä«µå ½Ö Áß ÇÑ Àå¸¸ ÁÂ¿ì¹ÝÀü
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½å¸¸ ï¿½Â¿ï¿½ï¿½ï¿½ï¿½
     private void PreMirror()
     {
         for (int i = 0; i < cards.Count; i++)
@@ -384,7 +384,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // °ø°³ ÈÄ ±â¹Í: µÞ¸é »óÅÂ¿¡¼­ Ä«µå À§Ä¡¸¦ ÁÂ¿ì ¹ÝÀü
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½: ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½
     private IEnumerator MirrorPos()
     {
         float minX = 99999f;
@@ -409,7 +409,7 @@ public class GameManager : MonoBehaviour
 
             c.ShowBackImmediate();
             var p = c.transform.position;
-            p.x = cx - (p.x - cx); // Áß½ÉÀ» ±âÁØÀ¸·Î ÁÂ¿ì ¹ÝÀü
+            p.x = cx - (p.x - cx); // ï¿½ß½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½
             target.Add(p);
         }
 
@@ -422,7 +422,7 @@ public class GameManager : MonoBehaviour
         isShifting = false;
     }
 
-    // Å¬¸¯ ½Ã ÁÙ ´ÜÀ§ Ä«µå ÀÌµ¿ ±â¹Í
+    // Å¬ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½
     private void ShiftOnce()
     {
         var movable = new List<Card>();
@@ -434,7 +434,7 @@ public class GameManager : MonoBehaviour
 
         if (movable.Count <= 1) return;
 
-        // y ±âÁØÀ¸·Î À§ÂÊ ÁÙºÎÅÍ, °°Àº ÁÙÀº x ±âÁØ ¿ÞÂÊºÎÅÍ
+        // y ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ùºï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ x ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Êºï¿½ï¿½ï¿½
         movable.Sort((a, b) =>
         {
             float dy = b.transform.position.y - a.transform.position.y;
@@ -443,7 +443,7 @@ public class GameManager : MonoBehaviour
             return dx > 0 ? 1 : -1;
         });
 
-        // y °ªÀÌ ºñ½ÁÇÑ Ä«µå³¢¸® ÇÏ³ªÀÇ ÁÙ·Î ¹­±â
+        // y ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½å³¢ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½
         var rowList = new List<List<Card>>();
         const float rowThreshold = 0.5f;
 
@@ -470,12 +470,12 @@ public class GameManager : MonoBehaviour
         float dur = 0.22f;
         Ease ease = Ease.InOutQuad;
 
-        // °¢ ÁÙº°·Î µû·Î ¼øÈ¯ ÀÌµ¿
+        // ï¿½ï¿½ ï¿½Ùºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½Ìµï¿½
         for (int r = 0; r < rowList.Count; r++)
         {
             var row = rowList[r];
 
-            // ÁÙ ³»¿¡¼­ x ±âÁØ ¿ÞÂÊ ¡æ ¿À¸¥ÂÊ Á¤·Ä
+            // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ x ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             row.Sort((a, b) =>
             {
                 float dx = a.transform.position.x - b.transform.position.x;
@@ -489,7 +489,7 @@ public class GameManager : MonoBehaviour
 
             if (isMiddleRow)
             {
-                // °¡¿îµ¥ ÁÙ: ¿À¸¥ÂÊÀ¸·Î ÇÑ Ä­ (¸Ç ¿À¸¥ÂÊ Ä«µå°¡ ¸Ç ¿ÞÂÊÀ¸·Î)
+                // ï¿½ï¿½ï¿½îµ¥ ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä­ (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½å°¡ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
                 Vector3 last = pos[pos.Count - 1];
                 for (int i = pos.Count - 1; i >= 1; i--)
                     pos[i] = pos[i - 1];
@@ -497,7 +497,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                // ³ª¸ÓÁö ÁÙ: ¿ÞÂÊÀ¸·Î ÇÑ Ä­ (¸Ç ¿ÞÂÊ Ä«µå°¡ ¸Ç ¿À¸¥ÂÊÀ¸·Î)
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä­ (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½å°¡ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
                 Vector3 first = pos[0];
                 for (int i = 0; i < pos.Count - 1; i++)
                     pos[i] = pos[i + 1];
@@ -519,7 +519,7 @@ public class GameManager : MonoBehaviour
         isShifting = false;
     }
 
-    // Å¸·Î Ä«µå Á¦¿Ü ÀüÃ¼ µÚÁý±â
+    // Å¸ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     private void FlipNonTarot()
     {
         foreach (var c in cards)
@@ -528,7 +528,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // °ÔÀÓ¿À¹ö Ã³¸® (¼º°ø/½ÇÆÐ °øÅë)
+    // ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
     private void GameOver(bool success)
     {
         if (isGameOver) return;
@@ -544,6 +544,16 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.Log(success ? "GAME CLEAR" : "GAME OVER");
+        }
+
+        // ì„±ê³µ/ì‹¤íŒ¨ë§Œ ë³´ê³ í•˜ê³  DayControllerê°€ ëŒ€í™” ì”¬ìœ¼ë¡œ ë³µê·€ì‹œí‚´
+        if (DayController.Instance != null)
+        {
+            DayController.Instance.NotifyIntermissionDone(success);
+        }
+        else
+        {
+            Debug.LogWarning("[MiniGame] DayController not found.");
         }
     }
 

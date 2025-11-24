@@ -1,4 +1,5 @@
 VAR event_success = false
+VAR event_has_result = false
 VAR event_score = 0
 VAR event_tag = ""
 
@@ -29,13 +30,13 @@ VAR event_tag = ""
 나는 너에게 씌인 유령이고.
 #speaker:유령
 일단... 손님이 오잖아!
-#speaker:손님 #portrait:none
+#speaker:손님
 안녕하세요. 오늘의 운세 봐 주세요!
 #speaker:유령 #portrait:smiling_default
 다행히 별 거 아니네. 이런 건 네가 가진 '타로 카드'로 해결 할 수 있어.
 #speaker:유령 #portrait:smiling_default_1
 손님과 대화가 끝나면 타로 카드를 집어보자.
-#speaker:손님 #portrait:none
+#speaker:손님
 괜찮으세요? 아까부터 어딜 보고 계시는...
 + [괜찮다]
     -> okay
@@ -49,7 +50,7 @@ VAR event_tag = ""
 
 
 === day1_visitor2 ===
-#portrait:none
+#portrait:base_default
 의뢰인이 뽑은 카드는 '태양' 카드였다.
 
 #speaker:유령 #portrait:smiling_default
@@ -84,7 +85,7 @@ VAR event_tag = ""
     -> correct_answer
 
 = wrong_answer
-#portrait:none
+#portrait:base_default
 그리고-
 * [부족함 없이 즐긴다]
     -> wrong_answer1
@@ -94,7 +95,7 @@ VAR event_tag = ""
     -> wrong_answer1
 
 = correct_answer
-#portrait:none
+#portrait:base_default
 그리고-
 * [부족함 없이 즐긴다]
     -> correct_answer1
@@ -104,7 +105,7 @@ VAR event_tag = ""
     -> wrong_answer1
 
 = wrong_answer1
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 오늘은 친구들과 피크닉을 가기로 했는데, 정말로 그런 일이 생길까요?
 #speaker:손님
 걱정이네요. 조심해야겠어요
@@ -148,7 +149,7 @@ VAR event_tag = ""
 그보다 말이지 너, 냅다 점 부터 보지 말란 말야.
 #speaker:유령
 손님이 어떤 행색을 갖췄는지도 좀 보고, 대화를 해서 정보도 좀 얻고...
-#speaker:유령 smiling_default
+#speaker:유령 #portrait:smiling_default
 이런 게 다 점술의 결과를 설명 할 때 유용한 정보니까!
 + [사기 수법 같다]
     -> fraud
@@ -193,7 +194,7 @@ VAR event_tag = ""
 }
 
 = day1_v2_success
-#portrait:none
+#portrait:base_default
 남자가 뽑은 카드는 바보의 카드였다.
 #speaker:손님
 좋은 단어는 아닌 것 같은데요...
@@ -213,7 +214,7 @@ VAR event_tag = ""
     -> business
 
 = business
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 ...! 맞습니다. 무역 사업에 도전해 보려고 해요.
 #speaker:유령
 앞길에 위험이 많이 있네. 정말 위험해! 무역 사업이라면 한두 가지가 아니겠는걸?
@@ -229,7 +230,7 @@ VAR event_tag = ""
     -> N3
 
 = N1
-#portrait:none
+#portrait:base_default
 무역 사업이 위험한 건 알고 있지만, 죽을 만큼의 위험을 감수할 것은 아니지 않은가?
 당신은 이 카드가 가진 위험을 설명하며 목숨을 걸어야 할 것 같다며 말렸다.
 남자는 조용히 말을 들으며, 고민을 하는 듯 하더니 조용히 인사를 하곤 가게를 나갔다.
@@ -240,7 +241,7 @@ VAR event_tag = ""
 -> visitor3
 
 = N2
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 조력자라...
 남자는 흥미로운 듯이 이야기를 들었다.
 #speaker:손님
@@ -249,7 +250,7 @@ VAR event_tag = ""
     -> analysis
 
 = analysis
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 제법 말이 되는군요. 제 일에 확신이 들기도 합니다.
 #speaker:손님
 당신에게는 미안하지만... 우리같은 사업가 들은 이런 걸 믿어서는 안 됩니다.
@@ -261,7 +262,7 @@ VAR event_tag = ""
 -> visitor3
 
 = N3
-#portrait:none
+#portrait:base_default
 당신은
 하지만 뭔가 그럴듯한 해석으로 둘러댄 듯한 느낌. 남자는 뭔가 아리송한 표정을 지으며 고개를 끄덕이고는, 이내 가게를 나갔다.
 #speaker:유령 #portrait:base_default
@@ -282,7 +283,7 @@ VAR event_tag = ""
     -> cheering
 
 = apprenticeship
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 뭔가 해석이나 자세한 설명 같은 건 없는 건가요?
 * [정확히 보이는 게 없다]
     -> excuse
@@ -290,14 +291,14 @@ VAR event_tag = ""
     -> excuse
 
 = excuse
-#portrait:none
+#portrait:base_default
 남자는 뭔가 아리송한 표정을 지으며 고개를 끄덕이고는, 이내 가게를 나갔다.
 #speaker:유령 #portrait:base_default
 네 말을 들을 것 같지는 않은 걸.
 -> visitor3
 
 = cheering
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 오오, 그런가요? 왜죠?
 + [그럴듯한 해석으로 둘러댄다.]
     -> excuse1
@@ -314,7 +315,7 @@ VAR event_tag = ""
 벌써 피곤해보이는데? 안그래도 빌빌거리는 몸인데, 일찍 들어가서 쉬는 게 좋을 거 같아.
 #speaker:유령 #portrait:smiling_default_1
 오늘은 다음 손님까지만 받자.
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 ...
 #speaker:손님
 안녕하세요.
@@ -334,11 +335,11 @@ VAR event_tag = ""
 마치 제게 더 넓은 세계를 보여줄 것만 같아요, 그이는.
 #speaker:유령 #portrait:base_default
 아는 패턴이군.
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 만난 지는 얼마 되지 않았지만... 저는 확신해요!
 #speaker:유령 #portrait:base_default
 천생연분이라고?
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 우리 둘은 천생연분이라는 걸!
 (그녀는 얼굴을 붉히며 급히 말을 마무리 지었다.)
 #speaker:손님
@@ -351,7 +352,7 @@ VAR event_tag = ""
 = do_not_receive_orders
 #speaker:유령 #portrait:base_default
 철 없는 아가씨로구만.
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 어, 어떻게 그럴 수가!
 그녀는 부끄러운 듯 얼굴을 가리고는 황급히 자리를 떠났다.
 #skip_intermission
@@ -366,7 +367,7 @@ VAR event_tag = ""
 }
 
 = day1_v3_fail
-#portrait:none
+#portrait:base_default
 딱히 의미있는 결과가 나오지 않았다.
 -> branch
 
@@ -385,9 +386,9 @@ VAR event_tag = ""
     -> fraud
 
 = fraud
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 어라, 맞아요! 정확하시네요. 정말 예측 할 수 없는 남자에요.
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 정해진 길을 걷지 않는다는 느낌이 좋아요! 고집이 세다기보다는 강단이 있는 편이라고 해주세요.
 #speaker:유령 #portrait:base_default
 ...이건 확실히 말해줄 수 있겠군. 그녀석, 결혼하자고 하면 분명 도망갈거야.
@@ -396,7 +397,7 @@ VAR event_tag = ""
 -> branch1
 
 = branch
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 ...어떻게 나왔나요?
 * [내가 할 말은 없는 것 같다]
     -> branch2
@@ -404,7 +405,7 @@ VAR event_tag = ""
     -> branch3
 
 = branch1
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 ...어떻게 나왔나요?
 * [내가 할 말은 없는 것 같다]
     -> branch2
@@ -414,17 +415,17 @@ VAR event_tag = ""
     -> branch4
 
 = branch2
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 ...그 말이 다인가요? 저는 보다, 뭔가, 음...
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 '확실한' 대답이 듣고 싶어서 온 거라구요.
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 ...
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 왜 다들 그런 반응인지 모르게썽요. 내 마음은 진심이었는데...!
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 내 주위 사람들도 다 그런 표정을 지었어요...
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 자꾸 이러면 내가 맞는지 모르겠어...
 마치 울 것 같은 얼굴로 그녀는 자리를 떴다.
 #speaker:유령 #portrait:smiling_default
@@ -432,9 +433,9 @@ VAR event_tag = ""
 -> END
 
 = branch3
-#portrait:none
+#portrait:base_default
 그녀는 마치 자신의 편을 얻은 것 처럼 의기양양한 얼굴로 답했다.
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 역시 그렇죠? 있죠, 연애 운이라면 어떤 것까지 볼 수 있는 거에요?
 그 후로 한참동안 이런저런 잡다한 운세놀음에 시달렸다.
 어쩌면 대답을 잘못 한 걸지도 모르겠다.
@@ -443,7 +444,7 @@ VAR event_tag = ""
 
 = branch4
 그녀는 기대하지 않은 결과가 나온 듯 책상을 손으로 치며 외쳤다.
-#speaker:손님 #portrait:none
+#speaker:손님 #portrait:base_default
 어째서죠?! 저, 저는 그런 말을 들으려고 온 게 아니에요!
 그 후로 몇 마디 대화를 나누었지만 이 어린 아가씨가 설득 될 기미는 보이지 않았다.
 오히려 반항심을 자극한 걸지도 모른다...
