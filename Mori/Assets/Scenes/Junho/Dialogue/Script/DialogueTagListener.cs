@@ -12,16 +12,19 @@ public class DialogueTagListener : MonoBehaviour
 
     void HandleTags(List<string> tags)
     {
-        foreach (var tag in tags)
+        foreach (var raw in tags)
         {
-            var parts = tag.Split(':');
-            if (parts.Length < 2) continue;
-
+            var parts = raw.Split(':');
             var key = parts[0].Trim().ToLower();
-            var val = parts[1].Trim();
+            var val = parts.Length > 1 ? parts[1].Trim() : "";
 
             switch (key)
             {
+                case "skip_intermission":
+                    // 이번 대화가 END로 끝난 직후, 인터미션을 건너뛰고 다음 knot로 진행
+                    DayController.Instance?.RequestSkipIntermissionOnce();
+                    break;
+
                 case "portrait":
                     // e.g., "alice_happy", "none"
                     rightPortrait.SetPortrait(val);
