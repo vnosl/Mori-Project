@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,129 +8,179 @@ public class DayController : MonoBehaviour
 
     public enum Phase { None, Dialogue, Intermission, EndOfDay }
 
-    [Header("Refs")]
-    [SerializeField] DialogueManager dialogue;  // 대화 씬에서만 존재하므로 null일 수 있음
+    [SerializeField] bool autoStart = false;
 
-    [Header("Config")]
-    [SerializeField, Range(1, 10)] int visitorsPerDay = 3;
-    [SerializeField] List<string> visitorKnotNames = new() { "customer1", "customer2", "customer3" };
-    [SerializeField] string dialogueSceneName = "Game";         // 대화가 있는 씬 이름
-    [SerializeField] string intermissionSceneName = "Intermission"; // 중간 UI/미니게임 씬 이름
-    [SerializeField] string endOfDaySceneName = "EndOfDay";     // 하루 요약/세이브 씬 이름
+    [Header("Scene Names")]
+    [SerializeField] string dialogueSceneName = "Dialogue";
+    [SerializeField] string intermissionSceneName = "Intermission";
+    [SerializeField] string endOfDaySceneName = "EndOfDay";
 
-    Queue<string> todayQueue;
-    int servedToday;
-    Phase phase = Phase.None;
+    [Header("Day 1 Visitor Order (Ink knots)")]
+    [SerializeField]
+    List<string> day1Visitors = new()
+    {
+        "day1_visitor1",
+        "day1_visitor2",
+        "day1_visitor3",
+        "day1_visitor4",
+        "day1_end"            // 엔딩 노드
+    };
 
-    bool intermissionDone; // 미니게임 종료 신호
+    private Queue<string> queue;
+    private Phase phase = Phase.None;
+
+    public enum EventResult { None, Success, Fail }
+    public EventResult lastEventResult { get; private set; } = EventResult.None;
+    public int lastEventScore { get; private set; } = 0;
+    public string lastEventTag { get; private set; } = "";
+
+    private DialogueManager dialogue;
+
+    bool skipIntermissionOnce = false;
+    
 
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
+    void OnDestroy() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
     void Start()
     {
-        StartNewDay();
+        if (autoStart) StartDay1();   // ← 자동 시작을 옵션으로
     }
 
-    // 씬이 로드될 때 DialogueManager를 다시 찾아 연결 (씬 간 이동 대비)
-    void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
-    void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
+    public void BeginDay1FromMenu()
+    {
+        StartDay1();  // 내부에서 Dialogue 씬 로드까지 처리됨
+    }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 대화 씬에 진입하면 DialogueManager를 찾아 이벤트 연결
         if (scene.name == dialogueSceneName)
         {
-            dialogue = FindObjectOfType<DialogueManager>();
-            if (dialogue != null)
-            {
-                dialogue.DialogueFinished -= OnDialogueFinished;
-                dialogue.DialogueFinished += OnDialogueFinished;
-            }
+            TryAssignDialogue();
+            if (phase == Phase.Dialogue && queue != null && queue.Count > 0)
+                StartCurrentVisitor();
         }
     }
 
-    public void StartNewDay()
+    void TryAssignDialogue()
     {
-        servedToday = 0;
-        var shuffled = visitorKnotNames.OrderBy(_ => Random.value).ToList();
-        todayQueue = new Queue<string>(shuffled.Take(visitorsPerDay));
-        RunNextVisitor();
-    }
+        if (dialogue == null)
+            dialogue = FindObjectOfType<DialogueManager>(includeInactive: true);
 
-    void RunNextVisitor()
-    {
-        if (todayQueue.Count == 0)
+        if (dialogue != null)
         {
-            EndDay();
-            return;
+            dialogue.DialogueFinished -= OnDialogueFinished;
+            dialogue.DialogueFinished += OnDialogueFinished;
         }
+        else
+        {
+            Debug.LogError("[DayController] DialogueManager not found in Dialogue scene.");
+        }
+    }
 
-        // 대화 씬이 아니면 대화 씬으로 이동
+    public void StartDay1()
+    {
+        queue = new Queue<string>(day1Visitors);
+        phase = Phase.Dialogue;
+        EnsureOnDialogueSceneAndStart();
+    }
+
+    void EnsureOnDialogueSceneAndStart()
+    {
         if (SceneManager.GetActiveScene().name != dialogueSceneName)
         {
-            //SceneManager.LoadScene(dialogueSceneName, LoadSceneMode.Single);
-            // OnSceneLoaded에서 DialogueManager를 찾아 이벤트 연결 → 이후 StartVisitorAtKnot 호출
-            StartCoroutine(WaitAndStartDialogue());
-            return;
+            SceneManager.LoadScene(dialogueSceneName, LoadSceneMode.Single);
+            return; // 로드 완료 시 OnSceneLoaded에서 시작
         }
-
-        StartVisitorAtKnot(todayQueue.Peek()); // 우선 peek (끝나면 dequeue)
+        TryAssignDialogue();
+        StartCurrentVisitor();
     }
 
-    System.Collections.IEnumerator WaitAndStartDialogue()
+    void StartCurrentVisitor()
     {
-        // 한 프레임 기다렸다가 DialogueManager 연결이 끝나면 시작
-        yield return null;
-        if (dialogue == null) dialogue = FindObjectOfType<DialogueManager>();
-        if (dialogue != null) StartVisitorAtKnot(todayQueue.Peek());
-    }
+        if (queue == null || queue.Count == 0) { EndDay(); return; }
+        if (dialogue == null) { Debug.LogError("[DayController] DialogueManager is null."); return; }
 
-    void StartVisitorAtKnot(string knot)
-    {
+        string knot = queue.Peek(); // 성공적으로 끝나면 Dequeue
         phase = Phase.Dialogue;
-        // 초기 변수 넣고 싶으면 두 번째 인자에 전달
-        dialogue.StartStoryAtKnot(knot, null);
+
+        var initialVars = new Dictionary<string, object>
+        {
+            ["event_success"] = (lastEventResult == EventResult.Success),
+            ["event_score"] = lastEventScore,
+            ["event_tag"] = lastEventTag
+        };
+
+        // 소비
+        lastEventResult = EventResult.None;
+        lastEventScore = 0;
+        lastEventTag = "";
+
+        dialogue.StartStoryAtKnot(knot, initialVars);
     }
+
+    
+    public void RequestSkipIntermissionOnce() => skipIntermissionOnce = true;
 
     void OnDialogueFinished()
     {
-        if (phase != Phase.Dialogue) return;
+        if (queue != null && queue.Count > 0) queue.Dequeue();
 
-        // 이번 손님 처리 완료
-        todayQueue.Dequeue();
-        servedToday++;
+        if (queue != null && queue.Count > 0)
+        {
+            var next = queue.Peek();
 
-        // 다음 단계: Intermission 씬으로 이동
-        GoIntermission();
+            // ★ 이번 턴 스킵 요청이 있거나, 다음이 엔딩 노드면 인터미션 없이 바로 다음 노드로
+            if (skipIntermissionOnce || IsEndNode(next))
+            {
+                skipIntermissionOnce = false; // 한 번 쓰고 초기화
+                phase = Phase.Dialogue;
+                EnsureOnDialogueSceneAndStart();
+            }
+            else
+            {
+                GoIntermission();
+            }
+        }
+        else
+        {
+            EndDay();
+        }
+    }
+    bool IsEndNode(string knotName)
+    {
+        // 네이밍 규칙에 맞춰 판정 (원하면 리스트/해시셋으로 관리)
+        return knotName == "day1_end" || knotName.StartsWith("end_");
     }
 
     void GoIntermission()
     {
         phase = Phase.Intermission;
-        intermissionDone = false;
         SceneManager.LoadScene(intermissionSceneName, LoadSceneMode.Single);
-        // Intermission 씬에서 미니게임 끝나면 DayController.Instance.NotifyIntermissionDone() 호출
     }
 
-    // IntermissionController(버튼/미니게임 완료 지점)에서 호출
-    public void NotifyIntermissionDone()
+    public void NotifyIntermissionDone(bool success, int score = 0, string tag = "")
     {
-        if (phase != Phase.Intermission) return;
-        intermissionDone = true;
+        lastEventResult = success ? EventResult.Success : EventResult.Fail;
+        lastEventScore = score;
+        lastEventTag = tag;
 
-        // 다음 손님으로
-        RunNextVisitor();
+        phase = Phase.Dialogue;
+        EnsureOnDialogueSceneAndStart();
     }
 
     void EndDay()
     {
         phase = Phase.EndOfDay;
         SceneManager.LoadScene(endOfDaySceneName, LoadSceneMode.Single);
-        // 여기서 요약/보상/세이브 → 다음 날 시작 버튼 등에서 StartNewDay() 호출 가능
+        // 씬 이동 없이 패널로 끝내고 싶다면 위 줄을 주석 처리하고 UI 이벤트를 쏘면 됨.
     }
+
+
 }
