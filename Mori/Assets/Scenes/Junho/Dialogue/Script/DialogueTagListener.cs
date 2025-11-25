@@ -5,43 +5,66 @@ using UnityEngine.SceneManagement;
 public class DialogueTagListener : MonoBehaviour
 {
     [SerializeField] DialogueManager manager;
-    [SerializeField] PortraitView rightPortrait;   // ← 방금 만든 컴포넌트
+    [SerializeField] PortraitView rightPortrait;
 
-    void OnEnable() => manager.OnTagsParsed += HandleTags;
-    void OnDisable() => manager.OnTagsParsed -= HandleTags;
+    void Awake()
+    {
+        // 혹시 인스펙터에 안 넣었으면 찾아오기
+        if (manager == null)
+            manager = FindObjectOfType<DialogueManager>();
+    }
+
+    void OnEnable()
+    {
+        if (manager != null)
+            manager.OnTagsParsed += HandleTags;
+        else
+            Debug.LogError("[DialogueTagListener] manager reference is null. Tags will not be handled.");
+    }
+
+    void OnDisable()
+    {
+        if (manager != null)
+            manager.OnTagsParsed -= HandleTags;
+    }
 
     void HandleTags(List<string> tags)
     {
+        Debug.Log("[DialogueTagListener] Tags: " + string.Join(", ", tags));
         foreach (var raw in tags)
         {
-            var parts = raw.Split(':');
-            var key = parts[0].Trim().ToLower();
-            var val = parts.Length > 1 ? parts[1].Trim() : "";
+            if (string.IsNullOrWhiteSpace(raw)) continue;
 
-            switch (key)
+            var tokens = raw.Split(' '); // "skip_intermission #skip_next #goto:day1_end" 가능
+            foreach (var token in tokens)
             {
-                case "skip_intermission":
-                    // 이번 대화가 END로 끝난 직후, 인터미션을 건너뛰고 다음 knot로 진행
-                    DayController.Instance?.RequestSkipIntermissionOnce();
-                    break;
+                var t = token.Trim();
+                if (string.IsNullOrEmpty(t)) continue;
+                if (t[0] == '#') t = t.Substring(1);
 
-                case "portrait":
-                    // e.g., "alice_happy", "none"
-                    rightPortrait.SetPortrait(val);
-                    break;
+                var parts = t.Split(':');
+                var key = parts[0].Trim().ToLower();
+                var val = parts.Length > 1 ? parts[1].Trim() : "";
 
-                case "speaker":
-                    // 원하면 화자에 따라 기본 초상 전환 규칙도 가능
-                    break;
-
-                case "scene":
-                    // 필요 시 씬 전환
-                    // SceneManager.LoadScene(val);
-                    break;
-
-                case "sfx":
-                    // 효과음 재생 등…
-                    break;
+                switch (key)
+                {
+                    case "goto":
+                        Debug.Log($"[TagListener] goto tag detected, val = '{val}'");
+                        DayController.Instance?.ForceNextDialogueKnot(val);
+                        break;
+                    case "skip_intermission":
+                        DayController.Instance?.RequestSkipIntermissionOnce();
+                        break;
+                    case "skip_next":
+                        DayController.Instance?.RequestSkipNextDialogueOnce();
+                        break;
+                    case "portrait":
+                        rightPortrait?.SetPortrait(val);
+                        break;
+                    case "end_day":
+                        DayController.Instance?.ForceEndDay();
+                        break;
+                }
             }
         }
     }

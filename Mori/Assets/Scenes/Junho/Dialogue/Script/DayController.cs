@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,7 +14,6 @@ public class DayController : MonoBehaviour
     [Header("Scene Names")]
     [SerializeField] string dialogueSceneName = "Dialogue";
     [SerializeField] string intermissionSceneName = "Intermission";
-    [SerializeField] string endOfDaySceneName = "EndOfDay";
 
     [Header("Day 1 Visitor Order (Ink knots)")]
     [SerializeField]
@@ -23,8 +23,13 @@ public class DayController : MonoBehaviour
         "day1_visitor2",
         "day1_visitor3",
         "day1_visitor4",
-        "day1_end"            // 엔딩 노드
+        "day1_end" // 마지막 노드
     };
+
+    // === 마무리를 Dialogue 씬에서 처리하기 위한 훅 ===
+    [Header("End UI (optional)")]
+    [SerializeField] GameObject endOverlay; // 마무리 패널(없어도 됨)
+    public event Action OnDayEnded;         // 외부(UI)가 구독해서 패널 띄우기
 
     private Queue<string> queue;
     private Phase phase = Phase.None;
@@ -34,8 +39,11 @@ public class DayController : MonoBehaviour
 
     private DialogueManager dialogue;
 
-    // 이번 사이클(END 한 번)만 인터미션 스킵
     bool skipIntermissionOnce = false;
+    bool skipNextDialogueOnce = false;
+
+    // 현재 진행 중인 knot 이름(엔드 노드 즉시 종료 판정용)
+    string currentKnot = null;
 
     void Awake()
     {
@@ -51,10 +59,7 @@ public class DayController : MonoBehaviour
         if (autoStart) StartDay1();
     }
 
-    public void BeginDay1FromMenu()
-    {
-        StartDay1();
-    }
+    public void BeginDay1FromMenu() => StartDay1();
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
@@ -94,7 +99,7 @@ public class DayController : MonoBehaviour
         if (SceneManager.GetActiveScene().name != dialogueSceneName)
         {
             SceneManager.LoadScene(dialogueSceneName, LoadSceneMode.Single);
-            return; // 로드 완료 시 OnSceneLoaded에서 시작
+            return;
         }
         TryAssignDialogue();
         StartCurrentVisitor();
@@ -105,7 +110,8 @@ public class DayController : MonoBehaviour
         if (queue == null || queue.Count == 0) { EndDay(); return; }
         if (dialogue == null) { Debug.LogError("[DayController] DialogueManager is null."); return; }
 
-        string knot = queue.Peek(); // 성공적으로 끝나면 Dequeue
+        string knot = queue.Peek();     // 성공적으로 끝나면 Dequeue
+        currentKnot = knot;
         phase = Phase.Dialogue;
 
         var initialVars = new Dictionary<string, object>
@@ -114,32 +120,70 @@ public class DayController : MonoBehaviour
             ["event_has_result"] = (lastEventResult != EventResult.None),
         };
 
-        // 결과는 주입과 동시에 소비(다음 사이클에서 새 결과로 덮어쓰기)
+        // 주입과 동시에 소비
         lastEventResult = EventResult.None;
 
         dialogue.StartStoryAtKnot(knot, initialVars);
     }
 
     public void RequestSkipIntermissionOnce() => skipIntermissionOnce = true;
+    public void RequestSkipNextDialogueOnce() => skipNextDialogueOnce = true;
 
     void OnDialogueFinished()
     {
+        Debug.Log($"[DayController] OnDialogueFinished: currentKnot={currentKnot}, overrideNextKnot='{overrideNextKnot}', queue=[{(queue != null ? string.Join(", ", queue) : "null")}]");
+        // 방금 끝난 게 엔드 노드면 여기서 마무리
+        if (!string.IsNullOrEmpty(currentKnot) && IsEndNode(currentKnot))
+        {
+            EndDay();
+            return;
+        }
+
+        // 현재 노드 소비
         if (queue != null && queue.Count > 0) queue.Dequeue();
+        currentKnot = null;
+
+        // 1) goto 오버라이드가 있으면 큐를 덮어쓰고 즉시 대화 재개
+        if (!string.IsNullOrEmpty(overrideNextKnot))
+        {
+            queue = new Queue<string>(new[] { overrideNextKnot });
+            overrideNextKnot = null;
+            forceNextDialogueImmediate = true;  // 중복 보증
+            phase = Phase.Dialogue;
+            EnsureOnDialogueSceneAndStart();
+            return;
+        }
+
+        // 2) “무조건 대화 재개” 플래그가 켜져 있으면 인터미션 체크를 아예 건너뜀
+        if (forceNextDialogueImmediate)
+        {
+            forceNextDialogueImmediate = false;
+            phase = Phase.Dialogue;
+            EnsureOnDialogueSceneAndStart();
+            return;
+        }
+
+        // (선택) 다음 노드 1개 스킵
+        if (skipNextDialogueOnce && queue != null && queue.Count > 0)
+        {
+            queue.Dequeue();
+            skipNextDialogueOnce = false;
+        }
 
         if (queue != null && queue.Count > 0)
         {
             var next = queue.Peek();
 
-            // 엔딩 노드이거나 이번 턴 스킵 요청이 있으면 인터미션 없이 바로 다음으로
+            // 다음이 엔드 노드이거나 인터미션 스킵 요청이면 바로 대화
             if (skipIntermissionOnce || IsEndNode(next))
             {
-                skipIntermissionOnce = false; // 한 번 쓰고 초기화
+                skipIntermissionOnce = false;
                 phase = Phase.Dialogue;
                 EnsureOnDialogueSceneAndStart();
             }
             else
             {
-                GoIntermission();
+                GoIntermission();    // ← 여기까지 오기 전에 위에서 모두 걸러집니다
             }
         }
         else
@@ -148,9 +192,20 @@ public class DayController : MonoBehaviour
         }
     }
 
+    string overrideNextKnot = null;   // 태그로 강제 점프할 다음 노드
+    bool forceNextDialogueImmediate = false;
+
+    public void ForceNextDialogueKnot(string knotName)
+    {
+        Debug.Log($"[DayController] ForceNextDialogueKnot called with '{knotName}' (phase={phase}, currentKnot={currentKnot})");
+        overrideNextKnot = knotName;
+        forceNextDialogueImmediate = true;   // 인터미션 완전 금지
+        skipIntermissionOnce = true;         // 안전망 (겹쳐서 방지)
+        skipNextDialogueOnce = false;
+    }
+
     bool IsEndNode(string knotName)
     {
-        // 네이밍 규칙에 맞춰 판정 (원하면 리스트/해시셋으로 관리)
         return knotName == "day1_end" || knotName.StartsWith("end_");
     }
 
@@ -160,21 +215,32 @@ public class DayController : MonoBehaviour
         SceneManager.LoadScene(intermissionSceneName, LoadSceneMode.Single);
     }
 
-    // 미니게임 씬에서 성공/실패만 보고
     public void NotifyIntermissionDone(bool success)
     {
         lastEventResult = success ? EventResult.Success : EventResult.Fail;
         phase = Phase.Dialogue;
         EnsureOnDialogueSceneAndStart();
     }
-    
     public void NotifyIntermissionDone(bool success, int score, string tag)
-    => NotifyIntermissionDone(success);
+        => NotifyIntermissionDone(success);
 
+    public void ForceEndDay()
+    {
+        // 방어용: 더 이상 인터미션/다음 대화 안 돌도록 상태 정리
+        phase = Phase.EndOfDay;
+        queue = null;
+        currentKnot = null;
+
+        EndDay();
+    }
+
+    // === 여기서 마무리를 “Dialogue 씬 내부”에서 처리 ===
     void EndDay()
     {
-        phase = Phase.EndOfDay;
-        SceneManager.LoadScene(endOfDaySceneName, LoadSceneMode.Single);
-        // 씬 이동 없이 패널로 끝내고 싶다면 위 줄을 주석 처리하고 UI 이벤트를 쏘면 됨.
+    #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+    #else
+        Application.Quit();
+    #endif
     }
 }

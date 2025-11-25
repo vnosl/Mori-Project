@@ -201,7 +201,7 @@ VAR event_tag = ""
 #speaker:유령 #portrait:base_default
 글쎄, 이 사람에게는 꽤나 좋은 카드 같은데?
 #speaker:유령 #portrait:base_default_1
-0번. 수리학적으로 텅 비어있는 새로운 시작을 나타내는 카드지.
+수리학적으로 텅 비어있는 새로운 시작을 나타내는 카드지.
 #speaker:유령
 낭떠러지인데도 두려워하지 않는 모험심!
 #speaker:유령 #portrait:base_default
@@ -350,13 +350,12 @@ VAR event_tag = ""
     -> do_not_receive_orders
 
 = do_not_receive_orders
-#speaker:유령 #portrait:base_default
+#speaker:유령 #portrait:base_default #goto:day1_end
 철 없는 아가씨로구만.
 #speaker:손님 #portrait:base_default
 어, 어떻게 그럴 수가!
-그녀는 부끄러운 듯 얼굴을 가리고는 황급히 자리를 떠났다.
-#skip_intermission
--> END
+그녀는 부끄러운 듯 얼굴을 가리고는 황급히 자리를 떠났다. 
+-> day1_end
 
 
 === day1_visitor4 ===
@@ -430,7 +429,7 @@ VAR event_tag = ""
 마치 울 것 같은 얼굴로 그녀는 자리를 떴다.
 #speaker:유령 #portrait:smiling_default
 주위에서도 엄청 말린 모양이네! 하하.
--> END
+-> day1_end
 
 = branch3
 #portrait:base_default
@@ -440,7 +439,7 @@ VAR event_tag = ""
 그 후로 한참동안 이런저런 잡다한 운세놀음에 시달렸다.
 어쩌면 대답을 잘못 한 걸지도 모르겠다.
 유령이 보기 드물게 짜증을 낼 때쯤에야 그녀는 총총거리며 자리를 떴다.
--> END
+-> day1_end
 
 = branch4
 그녀는 기대하지 않은 결과가 나온 듯 책상을 손으로 치며 외쳤다.
@@ -450,7 +449,7 @@ VAR event_tag = ""
 오히려 반항심을 자극한 걸지도 모른다...
 #speaker:유령 #portrait:base_default
 흥, 시시하네.
--> END
+-> day1_end
 
 === day1_end ===
 #speaker:유령 #portrait:smiling_default
@@ -462,6 +461,9 @@ VAR event_tag = ""
 
 = GO_END
 그래, 잘 자.
+1일차 끝!
+#end_day
+ 
 -> END
 
 

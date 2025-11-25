@@ -937,12 +937,13 @@ MonoBehaviour:
   autoStart: 0
   dialogueSceneName: Dialogue
   intermissionSceneName: New Scene
-  endOfDaySceneName: EndOfDay
   day1Visitors:
   - day1_visitor1
   - day1_visitor2
   - day1_visitor3
+  - day1_visitor4
   - day1_end
+  endOverlay: {fileID: 0}
 --- !u!4 &1821020472
 Transform:
   m_ObjectHideFlags: 0
