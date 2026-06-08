@@ -30,6 +30,7 @@ Unity Hub에서 Mori 폴더를 열어줍니다.
 Unity 버전은 6000.0.40f1을 권장합니다.
 Assets/Scenes/Junho/Start/Start Scene.unity 씬을 실행합니다.
 Play 버튼을 눌러 게임을 시작합니다.
+
 프로젝트 구조
 Mori
 ├── Assets
@@ -39,6 +40,8 @@ Mori
 │   │   └── Youngjin   # 카드 매칭 미니게임
 │   ├── Ink            # Ink 대화 시스템
 │   └── Plugins        # DOTween 등 외부 플러그인
+
+
 개발 내용 요약
 
 이 프로젝트에서는 Unity의 씬 전환, UI 패널 관리, 대화 시스템, 카드 게임 로직을 구현했습니다.
